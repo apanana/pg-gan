@@ -159,9 +159,15 @@ def process_gt_dist(gt_matrix, dist_vec, S, filter=False, rate=None, neg1=True):
         gt_matrix = gt_matrix[singleton_mask]
         dist_vec = np.array(dist_vec)[singleton_mask]
 
+    ### ??? following comment seems wrong
+    # num_SNPs, n = gt_matrix.shape[0], gt_matrix.shape[1]
     num_SNPs = gt_matrix.shape[0] # SNPs x n
-    n = gt_matrix.shape[1]
-    if S == None:
+    n = gt_matrix.shape[1] # bad variable names T_T
+
+    print("process_gt_dist -", " S: ",S," num_SNPs: ",num_SNPs," n: ",n)
+    print(gt_matrix.shape)
+    # can probably get rid of this :|
+    if S == None: # `grep -r "process_gt_dist(" .` doesn't seem to ever occur
         S = num_SNPs # for region_len fixed
 
     # double check
@@ -171,6 +177,7 @@ def process_gt_dist(gt_matrix, dist_vec, S, filter=False, rate=None, neg1=True):
 
     # set up region
     region = np.zeros((n, S, 2), dtype=np.float32)
+    print("region:", region)
 
     mid = num_SNPs//2
     half_S = S//2
@@ -180,13 +187,21 @@ def process_gt_dist(gt_matrix, dist_vec, S, filter=False, rate=None, neg1=True):
         other_half_S = half_S
 
     # enough SNPs, take middle portion
+
+    # take middle S rows
+    print("gt: ",gt_matrix)
+    print("half_gt:", gt_matrix[mid-half_S:mid+ \
+            other_half_S,:])
     if mid >= half_S:
         minor = major_minor(gt_matrix[mid-half_S:mid+ \
             other_half_S,:].transpose(), neg1)
         region[:,:,0] = minor
+        print("region_1:", region)
         distances = np.vstack([np.copy(dist_vec[mid-half_S:mid+other_half_S]) \
             for k in range(n)])
         region[:,:,1] = distances
+        print("region_2:", region)
+
 
     # not enough SNPs, need to center-pad
     else:
@@ -200,18 +215,42 @@ def process_gt_dist(gt_matrix, dist_vec, S, filter=False, rate=None, neg1=True):
     return region # n X SNPs X 2
 
 def major_minor(matrix, neg1):
+    """
+    220 For both the real and simulated data we recode the genotypes by setting the minor allele to the value “1” and the
+    221 major allele to the value “−1” so that the discriminator cannot learn to distinguish real data based on reference bias or
+    222 ancestrally misidentified states. For the simulations where we must specify a region length L, we choose L = 50kb,
+    223 which ensures that in the majority of situations we have at least S = 36 SNPs. The middle 36 SNPs are retained, and
+    224 any regions with insufficient SNPs are centered and zero-padded. Such regions would automatically look very different
+    225 from the real data, so the generator quickly learns to avoid parameters that cause insufficient SNPs.
+    """
     """Note that matrix.shape[1] may not be S if we don't have enough SNPs"""
+    print("\n\nHI")
+    print(matrix, neg1)
+    print(matrix.shape)
     n = matrix.shape[0]
+    print(n/2)
     for j in range(matrix.shape[1]):
+        # counts the 1s in each colums
+        print(j, matrix[:,j]) 
+        print(matrix[:,j] > 0)
+        print( 1- matrix[:,j])
+        print()
+        assert np.count_nonzero(matrix[:,j] > 0) == np.count_nonzero(matrix > 0, axis=0)[j]
+
+
+        # if more than half are 1, flip 1 and 0
         if np.count_nonzero(matrix[:,j] > 0) > (n/2): # count the 1's
             matrix[:,j] = 1 - matrix[:,j]
 
+    print(matrix)
     # option to convert from 0/1 to -1/+1
     if neg1:
         matrix[matrix == 0] = -1
     # residual numbers higher than one may remain even though we restricted to
     # biallelic
     #matrix[matrix > 1] = 1 # removing since we filter in VCF
+
+    print()
     return matrix
 
 def prep_real(gt, snp_start, snp_end, indv_start, indv_end):
@@ -325,9 +364,11 @@ if __name__ == "__main__":
     a[1,1] = 1
     a[2,1] = 1
     a[4,2] = 1
-    dist_vec = [0.3, 0.2, 0.4, 0.5, 0.1, 0.2]
+    dist_vec = [0.3, 0.2, 0.4, 0.5, 0.1, 0.2] # shouldn't this sum to 1...?
 
     print(a)
     print(major_minor(a, neg1=True))
+
+    print("\n\nHIHIHIHI")
 
     process_gt_dist(a, dist_vec, 4, filter=True, rate=0.3)

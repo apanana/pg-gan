@@ -62,12 +62,13 @@ class Generator:
         # initialize 4D matrix (two channels for distances)
         # dimensions := [batch_size*[num_samples*[num_snps*[0,0]]]]
 
-        print("region dimensions: ", batch_size, self.num_samples, self.num_snps, 2)
         if self.num_snps == None:
             regions = []
         else:
             regions = np.zeros((batch_size, self.num_samples, self.num_snps, \
                 2), dtype=np.float32) # two channels
+        # print("region dimensions: ", batch_size, self.num_samples, self.num_snps, 2)
+        print("regions dimensions: ", regions.shape)
 
         # set up parameters
         sim_params = util.ParamSet()
@@ -423,3 +424,6 @@ if __name__ == "__main__":
     print(generator)
     mini_batch = generator.simulate_batch(50)
     print("x", mini_batch.shape)
+    print(mini_batch[0][0].sum(axis=0))
+    print(mini_batch.sum(axis=2))
+
