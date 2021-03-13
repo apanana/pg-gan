@@ -58,7 +58,11 @@ class Generator:
 
     def simulate_batch(self, batch_size, params=[], real=False, neg1=True):
 
+        print(batch_size,params,real,neg1)
         # initialize 4D matrix (two channels for distances)
+        # dimensions := [batch_size*[num_samples*[num_snps*[0,0]]]]
+
+        print("region dimensions: ", batch_size, self.num_samples, self.num_snps, 2)
         if self.num_snps == None:
             regions = []
         else:
@@ -76,11 +80,21 @@ class Generator:
 
         # simulate each region
         for i in range(batch_size):
+            print(i)
             seed = self.rng.integers(1,high=2**32) # like GAN "noise"
 
             ts = self.simulator(sim_params, self.sample_sizes, self.L, seed, \
                 prior=self.prior, weights=self.weights)
+            # print(ts)
+            if i == 49:
+                print("len(ts):", len(ts.trees()))
+                # for tree in ts.trees():
+                #     print(tree.draw(format="unicode"))
+            # dimensions = num_samples * num_snps * 2
             region = prep_region(ts, self.num_snps, self.L, self.filter, neg1)
+            if i == 49:
+                print("region: ", region)
+                print(len(region), len(region[0]), len(region[0][0]))
 
             if self.num_snps == None:
                 regions.append(region)
@@ -100,11 +114,21 @@ def draw_background_rate_from_prior(prior_rates, prob):
 
 def prep_region(ts, num_snps, L, filter, neg1):
     """Gets simulated data ready"""
+    # an array of dimensions #variants x # samples
+    # # variants is dependent on number of mutations that occur in simulation
+    # ie, # variants = # SNPs
+    # sublist i corresponds to the allele present for each sample
     gt_matrix = ts.genotype_matrix().astype(float)
+
+    # print(gt_matrix)
+    print(gt_matrix.shape)
     snps_total = gt_matrix.shape[0]
 
+    # variants are generated as a float via infinite sites mutation model
+    # need to map them to an integer bp#
     positions = [round(variant.site.position) for variant in ts.variants()]
     assert len(positions) == snps_total
+    # print(positions)
     dist_vec = [pos/L for pos in np.diff(positions,prepend=positions[0])]
 
     # when mirroring real data
@@ -291,11 +315,19 @@ def simulate_exp(params, sample_sizes, L, seed, prior=[], weights=[]):
     """Note this is a 1 population model"""
     assert len(sample_sizes) == 1
 
+    # print("simulate_exp:")
+    # print(params)
+    # print(sample_sizes)
+    # print(L)
+    # print(seed)
+    # print(prior)
+    # print(weights)
     # sample reco or use value
     if prior != []:
         reco = draw_background_rate_from_prior(prior, weights)
     else:
         reco = params.reco.value
+    # print(reco)
 
     T2 = params.T2.value
     N2 = params.N2.value
@@ -311,6 +343,11 @@ def simulate_exp(params, sample_sizes, L, seed, prior=[], weights=[]):
             initial_size=params.N1.value)
 	]
 
+    # for event in demographic_events:
+    #     print(event)
+    # print(params.mut.value)
+
+    # only modified value is random seed
     ts = msprime.simulate(sample_size = sum(sample_sizes),
 		demographic_events = demographic_events,
 		mutation_rate = params.mut.value,
@@ -383,5 +420,6 @@ if __name__ == "__main__":
     print("sim exp")
     generator = Generator(simulate_exp, ["N1", "T1"], [20], S, R, SEED)
     generator.update_params([params.N1.value, params.T1.value])
+    print(generator)
     mini_batch = generator.simulate_batch(50)
     print("x", mini_batch.shape)
