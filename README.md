@@ -94,10 +94,25 @@ python3 pg_gan.py -m im -p N1,N2,N_anc,T_split,reco,mig
 Below is a tutorial that explains how to run `pg-gan` on the 1000 Genomes data. Modifications may be needed for other data, but the process
 should generally be similar.
 
+Requirements: approximately 20GB of free space
+
 Note: this tutorial will require [bcftools](http://samtools.github.io/bcftools/bcftools.html).
 
 1. Download the Phase 3 `ALL` VCF files from the [1000 Genomes Project](https://www.internationalgenome.org/data) for chromosomes 1-22. Also download
 the accessibility mask `20120824_strict_mask.bed`.
+
+NOTE: 
+Specifically download the `ALL.*.vcf.tz` files. These will be filtered and converted into our desired subsets by bcftools, without requiring any unzipping (hooray for saving space!)
+Alternative mask if `20120824_strict_mask.bed` can't be found. `20140520.strict_mask.autosomes.bed`, found at:
+~~~
+ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/accessible_genome_masks/20140520.strict_mask.autosomes.bed
+~~
+
+This will require modifications to the `-b` flag in subsequent runs of `pg_gan.py` and `summary_stats.py`
+
+ANOTHER NOTE:
+Do NOT manually unzip the `ALL.*.vcf.tz` files. This WILL eat up all the free space on your machine.
+
 
 2. Identify a set of samples for the population of interest. Here we will use CHB, and a sample file is provided above in `prep_data/CHB_gan.txt`.
 When using more than one population, make sure the samples are sorted by population (and currently equal numbers from each population are needed). Data from all populations eventually needs to end up in the same VCF file and then the same HDF5 file.
@@ -135,6 +150,13 @@ chr1    254996  3.354927        0.439456
 ~~~
 
 ## Visualizing summary statistics
+
+Requirements: `libsequence`
+
+If module not found, 'pylibseq' needs to be installed. If errors are encountered when building via pip, pkg can also be installed via conda:
+
+Conda installation: `https://bioconda.github.io/user/install.html#install-conda`
+`conda install pylibseq`
 
 After running `pg-gan`, the resulting parameters can be used to simulate data, which can then be compared to the real data via summary statistics. For example, to reproduce (roughly) the figures below, run the following commands:
 
