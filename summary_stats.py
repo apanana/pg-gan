@@ -17,7 +17,7 @@ import sys
 
 # our imports
 import real_data_random
-import simulate_py_from_MSMC_IM
+# import simulate_py_from_MSMC_IM
 import simulation
 import ss_helpers
 import util
@@ -75,9 +75,10 @@ def process_opts(opts):
 
     # MSMC
     elif opts.model == 'msmc':
-        print("\nALERT you are running MSMC sim!\n")
-        sample_sizes = [98,98]
-        simulator = simulate_py_from_MSMC_IM.simulate_msmc
+        sys.exit(opts.model + " is not supported")
+        # print("\nALERT you are running MSMC sim!\n")
+        # sample_sizes = [98,98]
+        # simulator = simulate_py_from_MSMC_IM.simulate_msmc
 
     # CEU/CHB (2 populations)
     elif opts.model == 'post_ooa':
