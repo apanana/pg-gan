@@ -4,6 +4,11 @@ This software can be used to create realistic simulated data that matches real
 population genetic data. It implements a GAN-based algorithm (Generative Adversarial Network)
 described in the pre-print [Automatic inference of demographic parameters using Generative Adversarial Networks](https://www.biorxiv.org/content/10.1101/2020.08.05.237834v1).
 
+## Google Colab Notebook
+markdown
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/apanana/pg-gan/blob/colab/notebooks/hello-world.ipynb)
+XXX: link currently to a temporary branch
+
 ## Dependencies
 
 ~~~
@@ -23,7 +28,7 @@ numpy==1.17.2
 tensorflow==2.2.0
 ~~~
 
-See the [msprime documentation](https://msprime.readthedocs.io/en/stable/index.html) and
+See the [msprime documentation](https://tskit.dev/msprime/docs/stable/installation.html) and
 [tensorflow pip guide](https://www.tensorflow.org/install/pip) for installation instructions.
 
 Dependencies for pre-processing real data (not needed to try out the first two simulation command lines below):
