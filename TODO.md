@@ -14,4 +14,3 @@
 - setup datastorage
 - check ingress/egress costs
 - run on real data
-
