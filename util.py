@@ -123,7 +123,6 @@ def parse_params(param_input, all_params):
     param_strs = param_input.split(',')
     parameters = []
     for _, p in vars(all_params).items():
-        print(p)
         if p.name in param_strs:
             parameters.append(p)
 
