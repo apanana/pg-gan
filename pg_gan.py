@@ -12,6 +12,7 @@ import random
 import sys
 import tensorflow as tf
 from scipy.optimize import basinhopping
+from time import perf_counter
 
 # our imports
 import discriminators
@@ -41,6 +42,7 @@ print("NUM_CHANNELS", NUM_CHANNELS)
 
 def main():
     """Parse args and run simulated annealing"""
+    t1_start = perf_counter()
 
     opts = util.parse_args()
     print(opts)
@@ -52,6 +54,12 @@ def main():
         tf.random.set_seed(opts.seed)
 
     generator, discriminator, iterator, parameters = process_opts(opts)
+
+    t1_stop = perf_counter()
+    print("Elapsed time (s):", t1_start, t1_stop) 
+    print("Elapsed time (s) - setup, process_opts:", t1_stop-t1_start)
+
+    t2_start = perf_counter()
 
     # grid search
     if opts.grid:
@@ -66,6 +74,10 @@ def main():
 
     print(posterior)
     print(loss_lst)
+
+    t2_stop = perf_counter()
+    print("Elapsed time (s):", t2_start, t2_stop) 
+    print("Elapsed time (s) - entire program:", t2_stop-t2_start)
 
 def process_opts(opts):
 
@@ -121,7 +133,7 @@ def process_opts(opts):
 def simulated_annealing(generator, discriminator, iterator, parameters, seed, \
     toy=False):
     """Main function that drives GAN updates"""
-
+    t3_start = perf_counter()
     # main object for pg-gan
     pg_gan = PG_GAN(generator, discriminator, iterator, parameters, seed)
 
@@ -146,8 +158,14 @@ def simulated_annealing(generator, discriminator, iterator, parameters, seed, \
     if toy:
         num_iter = 2
 
+    
+    t3_stop = perf_counter()
+    print("Elapsed time (s):", t3_start, t3_stop) 
+    print("Elapsed time (s) - PG_GAN and generator loss:", t3_stop-t3_start)
+
     # main pg-gan loop
     for i in range(num_iter):
+        ti_start = perf_counter()
         print("\nITER", i)
         print("time", datetime.datetime.now().time())
         T = temperature(i, num_iter) # reduce width of proposal over time
@@ -179,6 +197,12 @@ def simulated_annealing(generator, discriminator, iterator, parameters, seed, \
         rand = np.random.rand()
         accept = rand < p_accept
 
+        ti_stop = perf_counter()
+        print("Elapsed time (s):", ti_start, ti_stop) 
+        print("Elapsed time (s) - proposals - iter: ",i," time: ", ti_stop-ti_start) 
+
+        tj_start = perf_counter()
+
         # if accept, retrain
         if accept:
             print("ACCEPTED")
@@ -196,6 +220,10 @@ def simulated_annealing(generator, discriminator, iterator, parameters, seed, \
         print(T, p_accept, rand, s_current, loss_curr)
         posterior.append(s_current)
         loss_lst.append(loss_curr)
+
+        tj_stop = perf_counter()
+        print("Elapsed time (s):", tj_start, tj_stop) 
+        print("Elapsed time (s) - proposals - iter: ",i," time: ", tj_stop-tj_start)
 
     return posterior, loss_lst
 
