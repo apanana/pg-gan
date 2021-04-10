@@ -225,7 +225,7 @@ def simulate_ooa2(params, sample_sizes, L, seed, prior=[], weights=[]):
 
     return ts
 
-def simulate_postOOA(params, sample_sizes, L, seed, prior=[], weights=[]):
+def simulate_post_ooa(params, sample_sizes, L, seed, prior=[], weights=[]):
     """Note this is a 2 population model for CEU/CHB split"""
     assert len(sample_sizes) == 2
 
@@ -369,6 +369,9 @@ def simulate_ooa3(params, sample_sizes, L, seed, prior=[], weights=[]):
     ts = engine.simulate(model, contig, samples)
 
     return ts
+
+def simulate_fsc(params, sample_sizes, L, seed, prior=[], weights=[]):
+    return simulate_ooa2(params, sample_sizes, L, seed, prior, weights)
 
 # testing
 if __name__ == "__main__":
