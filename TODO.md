@@ -8,9 +8,15 @@
 
 - ~~helloworld notebook~~
 - ~~run a test net on the notebook~~
-- clean up the setup script
-- benchmark performance of CPU/GPU/TPU vs local
-- check permissions for colab notebooks/repo
+- ~~clean up the setup script~~
+- need to fix requirements.txt on master
+- ~~benchmark performance of CPU/GPU/TPU vs local~~ \
+documented in this thread: https://github.com/apanana/pg-gan/issues/17
+
 - setup datastorage
 - check ingress/egress costs
-- run on real data
+- run and benchmark on real data
+
+# Other Colab-related TODO:
+- check permissions for colab notebooks/repo
+- consider implementing TPU specific code
