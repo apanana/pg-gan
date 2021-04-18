@@ -7,13 +7,6 @@ Date: 2/4/21
 import numpy as np
 import sys
 
-def filter_func(x, rate): # currently not used
-    """Keep non-singletons. If singleton, filter at given rate"""
-    # TODO since we haven't done major/minor yet, might want to add != n-1 too
-    if np.sum(x) != 1:
-        return True
-    return np.random.random() >= rate # keep (1-rate) of singletons
-
 def process_gt_dist(gt_matrix, dist_vec, S, filter=False, rate=None, neg1=True):
     """
     Take in a genotype matrix and vector of inter-SNP distances. Return a 3D
@@ -83,21 +76,6 @@ def major_minor(matrix, neg1):
     #matrix[matrix > 1] = 1 # removing since we filter in VCF
     return matrix
 
-def prep_real(gt, snp_start, snp_end, indv_start, indv_end):
-    """Slice out desired region and unravel haplotypes"""
-    region = gt[snp_start:snp_end, indv_start:indv_end, :]
-    both_haps = np.concatenate((region[:,:,0], region[:,:,1]), axis=1)
-    return both_haps
-
-def filter_nonseg(region):
-    """Filter out non-segregating sites in this region"""
-    nonseg0 = np.all(region == 0, axis=1) # row all 0
-    nonseg1 = np.all(region == 1, axis=1) # row all 1
-    keep0 = np.invert(nonseg0)
-    keep1 = np.invert(nonseg1)
-    filter = np.logical_and(keep0, keep1)
-    return filter
-
 def parse_hapmap_empirical_prior(files):
     """
     Parse recombination maps to create a distribution of recombintion rates to
@@ -146,15 +124,41 @@ def parse_hapmap_empirical_prior(files):
 
     return new_rates, new_weights
 
-def read_demo_file(filename, Ne):
-    """Read in a PSMC-like demography"""
-    demos = []
-    with open(filename, 'r') as demo_file:
-        for pop_params in demo_file:
-            time, pop = pop_params.strip().split()
-            demos.append(msprime.PopulationParametersChange(time=float(time) \
-                * 4 * Ne, initial_size=float(pop) * Ne))
-    return demos
+################################################################################
+# UNUSED FUNCTIONS
+################################################################################
+# def filter_func(x, rate): # currently not used
+#     """Keep non-singletons. If singleton, filter at given rate"""
+#     # TODO since we haven't done major/minor yet, might want to add != n-1 too
+#     if np.sum(x) != 1:
+#         return True
+#     return np.random.random() >= rate # keep (1-rate) of singletons
+
+
+# def prep_real(gt, snp_start, snp_end, indv_start, indv_end):
+#     """Slice out desired region and unravel haplotypes"""
+#     region = gt[snp_start:snp_end, indv_start:indv_end, :]
+#     both_haps = np.concatenate((region[:,:,0], region[:,:,1]), axis=1)
+#     return both_haps
+
+# def filter_nonseg(region):
+#     """Filter out non-segregating sites in this region"""
+#     nonseg0 = np.all(region == 0, axis=1) # row all 0
+#     nonseg1 = np.all(region == 1, axis=1) # row all 1
+#     keep0 = np.invert(nonseg0)
+#     keep1 = np.invert(nonseg1)
+#     filter = np.logical_and(keep0, keep1)
+#     return filter
+
+# def read_demo_file(filename, Ne):
+#     """Read in a PSMC-like demography"""
+#     demos = []
+#     with open(filename, 'r') as demo_file:
+#         for pop_params in demo_file:
+#             time, pop = pop_params.strip().split()
+#             demos.append(msprime.PopulationParametersChange(time=float(time) \
+#                 * 4 * Ne, initial_size=float(pop) * Ne))
+#     return demos
 
 if __name__ == "__main__":
     # test major/minor and post-processing
