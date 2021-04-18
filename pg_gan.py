@@ -18,6 +18,7 @@ import discriminators
 import real_data_random
 import simulation
 import util
+import settings
 
 from real_data_random import Region
 
@@ -42,7 +43,7 @@ print("NUM_CHANNELS", NUM_CHANNELS)
 def main():
     """Parse args and run simulated annealing"""
 
-    opts = util.parse_args()
+    opts = settings.parse_args()
     print(opts)
 
     # set up seeds
@@ -70,8 +71,7 @@ def main():
 def process_opts(opts):
 
     # parameter defaults
-    all_params = util.ParamSet()
-    parameters = util.parse_params(opts.params, all_params) # desired params
+    parameters = settings.parse_params(opts.params) # desired params
     param_names = [p.name for p in parameters]
 
     # if real data provided

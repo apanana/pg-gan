@@ -21,6 +21,7 @@ import real_data_random
 import simulation
 import ss_helpers
 import util
+import settings
 
 # globals
 NUM_SNPS = 36
@@ -44,8 +45,7 @@ FSC_PARAMS = [21017, 0.0341901, 3105.5, 21954, 33077.5, 2844, 1042]
 def process_opts(opts):
 
     # parameter defaults
-    all_params = util.ParamSet()
-    parameters = util.parse_params(opts.params, all_params) # desired params
+    parameters = settings.parse_params(opts.params) # desired params
     param_names = [p.name for p in parameters]
 
     filter = False # for filtering singletons
@@ -97,7 +97,7 @@ def main():
     print("input file", input_file)
     print("output file", output_file)
 
-    opts = util.parse_args()
+    opts = settings.parse_args()
     generator, iterator, parameters = process_opts(opts)
 
     values = ss_helpers.parse_output(input_file)
