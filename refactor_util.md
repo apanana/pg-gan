@@ -5,32 +5,32 @@ The util.py file contains multiple functionalities (some of which aren't used an
 
 #Locations where util is used:
 ~/Desktop/pg-gan $grep -r "util." *.py
-pg_gan.py:    opts = util.parse_args()
-pg_gan.py:    all_params = util.ParamSet()
-pg_gan.py:    parameters = util.parse_params(opts.params, all_params) # desired params
+~~pg_gan.py:    opts = util.parse_args()~~
+~~pg_gan.py:    all_params = util.ParamSet()~~
+~~pg_gan.py:    parameters = util.parse_params(opts.params, all_params) # desired params~~
 
 real_data_random.py:            after = util.process_gt_dist(hap_data, dist_vec, len(dist_vec), \
 
 simulation.py:            self.prior, self.weights = util.parse_hapmap_empirical_prior(files)
-simulation.py:        sim_params = util.ParamSet()
+~~simulation.py:        sim_params = util.ParamSet()~~
 simulation.py:        return util.process_gt_dist(gt_matrix, dist_vec, num_snps, filter=True,\
 simulation.py:        return util.process_gt_dist(gt_matrix, dist_vec, num_snps, neg1=neg1)
-simulation.py:    params = util.ParamSet()
+~~simulation.py:    params = util.ParamSet()~~
 
-summary_stats.py:    all_params = util.ParamSet()
-summary_stats.py:    parameters = util.parse_params(opts.params, all_params) # desired params
-summary_stats.py:    opts = util.parse_args()
+~~summary_stats.py:    all_params = util.ParamSet()~~
+~~summary_stats.py:    parameters = util.parse_params(opts.params, all_params) # desired params~~
+~~summary_stats.py:    opts = util.parse_args()~~
 
 ##New files
-#parameter.py:
+#parameter.py: (DONE)
 parameter
 paramset
 
-#settings.py:
+#settings.py: (DONE))
 parse_args
 A bunch of other stuff can go in here like the globals used in pg_gan.py and in summary_stats.py
 
-#all_params:
+#all_params: (DONE)
 ~/Desktop/pg-gan $grep -r "all_params" *.py
 pg_gan.py:    all_params = util.ParamSet()
 pg_gan.py:    parameters = util.parse_params(opts.params, all_params) # desired params
@@ -39,7 +39,7 @@ summary_stats.py:    parameters = util.parse_params(opts.params, all_params) # d
 util.py:def parse_params(param_input, all_params):
 util.py:    for _, p in vars(all_params).items():
 
-#parse_params
+#parse_params (DONE)
 parse_params makes no sense right now
 
 #other funcs:
