@@ -71,8 +71,7 @@ def main():
 def process_opts(opts):
 
     # parameter defaults
-    all_params = util.ParamSet()
-    parameters = util.parse_params(opts.params, all_params) # desired params
+    parameters = util.parse_params(opts.params) # desired params
     param_names = [p.name for p in parameters]
 
     # if real data provided

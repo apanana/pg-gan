@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.stats import norm
 
 class Parameter:
     """Holds information about evolutionary parameters to infer"""

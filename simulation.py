@@ -22,6 +22,7 @@ import sps.HomSap
 # our imports
 import real_data_random
 import util
+import parameter
 
 ################################################################################
 # SIMULATION
@@ -66,7 +67,7 @@ class Generator:
                 2), dtype=np.float32) # two channels
 
         # set up parameters
-        sim_params = util.ParamSet()
+        sim_params = parameter.ParamSet()
         if real:
             pass # keep orig for "fake" real
         elif params == []:
@@ -380,7 +381,7 @@ if __name__ == "__main__":
     S = 36
     R = 50000
     SEED = 1833
-    params = util.ParamSet()
+    params = parameter.ParamSet()
 
     # quick test
     print("sim exp")
