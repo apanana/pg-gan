@@ -97,6 +97,11 @@ def main():
     print("input file", input_file)
     print("output file", output_file)
 
+    # need to remove these from the list of args or else argparser will not
+    # handle unspecified positionals.
+    sys.argv.remove(input_file)
+    sys.argv.remove(output_file)
+
     opts = settings.parse_args()
     generator, iterator, parameters = process_opts(opts)
 
