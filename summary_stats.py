@@ -21,6 +21,7 @@ import real_data_random
 import simulation
 import ss_helpers
 import util
+import settings
 
 # globals
 NUM_SNPS = 36
@@ -97,7 +98,7 @@ def main():
     print("input file", input_file)
     print("output file", output_file)
 
-    opts = util.parse_args()
+    opts = settings.parse_args()
     generator, iterator, parameters = process_opts(opts)
 
     values = ss_helpers.parse_output(input_file)
