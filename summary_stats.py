@@ -45,7 +45,7 @@ FSC_PARAMS = [21017, 0.0341901, 3105.5, 21954, 33077.5, 2844, 1042]
 def process_opts(opts):
 
     # parameter defaults
-    parameters = util.parse_params(opts.params) # desired params
+    parameters = settings.parse_params(opts.params) # desired params
     param_names = [p.name for p in parameters]
 
     filter = False # for filtering singletons

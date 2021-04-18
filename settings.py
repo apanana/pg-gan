@@ -1,4 +1,5 @@
 import argparse
+import parameter
 
 def parse_args():
     """Parse command line arguments."""
@@ -18,3 +19,17 @@ def parse_args():
         help='seed for RNG')
 
     return parser.parse_args()
+
+def parse_params(param_input):
+    """See which params were desired for inference"""
+    param_strs = param_input.split(',')
+    parameters = []
+    for _, p in vars(parameter.ParamSet()).items():
+        if p.name in param_strs:
+            parameters.append(p)
+
+    assert len(parameters) == len(param_strs)
+    for p in parameters:
+        print(p)
+
+    return parameters

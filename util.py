@@ -6,21 +6,6 @@ Date: 2/4/21
 
 import numpy as np
 import sys
-import parameter
-
-def parse_params(param_input):
-    """See which params were desired for inference"""
-    param_strs = param_input.split(',')
-    parameters = []
-    for _, p in vars(parameter.ParamSet()).items():
-        if p.name in param_strs:
-            parameters.append(p)
-
-    assert len(parameters) == len(param_strs)
-    for p in parameters:
-        print(p)
-
-    return parameters
 
 def filter_func(x, rate): # currently not used
     """Keep non-singletons. If singleton, filter at given rate"""
